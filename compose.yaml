@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  money-exchange-database:
+    container_name: money-exchange-database
+    image: mysql:8
+    command: ["mysqld", "--mysql-native-password=ON"]
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: money-exchange
+      MYSQL_USER: money-exchange
+      MYSQL_PASSWORD: money-exchange
+    ports:
+      - '3306:3306'
+    volumes:
+      - ./conf.d/mysql:/var/lib/mysql
+  money-exchange-php:
+    container_name: money-exchange-php
+    build:
+      context: .
+      dockerfile: ./conf.d/php/Dockerfile
+    ports:
+      - '9000:9000'
+    volumes:
+      - ./:/var/www/symfony_docker
+      - ./var/log:/var/log
+    depends_on:
+      - money-exchange-database
+  money-exchange-nginx:
+    container_name: money-exchange-nginx
+    image: nginx:stable-alpine
+    ports:
+      - '8080:80'
+    volumes:
+      - ./:/var/www/symfony_docker
+      - ./conf.d/nginx/default.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - money-exchange-php
+      - money-exchange-database
