@@ -55,13 +55,12 @@ following URL: [http://localhost:8080](http://localhost:8080).
 
 ## Update currency rates
 
-To update currency rates use following command with one of two valid sources `(CRB, ECB)`, so first you need to connect to it by
-creating a terminal:
+To update currency rates, first you need to connect to it by creating a terminal:
 ```
 docker exec -it money-exchange-php /bin/bash
 ```
 
-Run the tests with the following command:
+Run following command with one of two valid sources `(CRB, ECB)`:
 ```
 php bin/console app:currency-rate-update CBR
 or
