@@ -14,7 +14,6 @@ class Valute
     #[SerializedPath('[VunitRate]')]
     private string $unitRate;
 
-
     public function getCharCode(): string
     {
         return $this->charCode;

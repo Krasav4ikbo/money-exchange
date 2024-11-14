@@ -2,6 +2,7 @@
 namespace App\Tests\Provider;
 
 use App\DTO\CurrencyUpdateDTO;
+use App\Factory\DTO\CurrencyUpdateDTOFactory;
 use App\Provider\CBRCurrencyProvider;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
@@ -9,6 +10,15 @@ use Symfony\Contracts\HttpClient\ResponseInterface;
 
 class CBRCurrencyProviderTest extends KernelTestCase
 {
+    private CurrencyUpdateDTOFactory $factory;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->factory = new CurrencyUpdateDTOFactory();
+    }
+
     public function testCorrectSourceData(): void
     {
         // Arrange
@@ -41,7 +51,7 @@ class CBRCurrencyProviderTest extends KernelTestCase
             ->method('request')
             ->willReturn($response);
 
-        $cbrCurrencyProvider = new CBRCurrencyProvider($client);
+        $cbrCurrencyProvider = new CBRCurrencyProvider($client, $this->factory);
 
         // Act
         $result = $cbrCurrencyProvider->getPreparedDataForUpdate();
@@ -89,7 +99,7 @@ class CBRCurrencyProviderTest extends KernelTestCase
             ->method('request')
             ->willReturn($response);
 
-        $cbrCurrencyProvider = new CBRCurrencyProvider($client);
+        $cbrCurrencyProvider = new CBRCurrencyProvider($client, $this->factory);
 
         // Act
         $result = $cbrCurrencyProvider->getPreparedDataForUpdate();

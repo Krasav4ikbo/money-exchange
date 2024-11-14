@@ -6,10 +6,11 @@ use App\DTO\ExchangeInputDTO;
 use App\DTO\ExchangeOutputDTO;
 use App\Entity\CurrencyRate;
 use App\Exception\ValidationDTOException;
+use App\Formatter\ValidationErrorsFormatter;
 use App\Repository\CurrencyRateRepository;
 use App\Trait\RateRoundTrait;
-use App\Validator\Validator;
 use Generator;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class CurrencyExchangeCalculate
 {
@@ -22,7 +23,7 @@ class CurrencyExchangeCalculate
 
     function __construct(
         private readonly CurrencyRateRepository $currencyRateRepository,
-        private readonly Validator              $validator
+        private readonly ValidatorInterface $validator,
     )
     {
         $this->result = new ExchangeOutputDTO();
@@ -54,12 +55,12 @@ class CurrencyExchangeCalculate
 
     private function validate(): void
     {
-        try {
-            $this->validator->validate($this->input);
-        } catch (ValidationDTOException $e) {
+        $violations = $this->validator->validate($this->input);
+
+        if (count($violations) > 0) {
             $this->result->setIsValid(false);
 
-            $this->result->setErrorMessages($e->getErrorMessages());
+            $this->result->setErrorMessages(ValidationErrorsFormatter::formatValidationErrors($violations));
 
             $this->result->setIsFinished(true);
         }

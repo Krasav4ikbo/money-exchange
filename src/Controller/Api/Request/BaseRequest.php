@@ -1,18 +1,25 @@
 <?php
 namespace App\Controller\Api\Request;
 
+use App\Formatter\ValidationErrorsFormatter;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 abstract class BaseRequest
 {
-    public function __construct()
+    private array $errorMessages = ['message' => 'validation_failed', 'errors' => []];
+
+    public function __construct(
+        protected ValidatorInterface $validator,
+        protected RequestStack       $requestStack
+    )
     {
-        $this->populate();
     }
 
     public function getRequest(): Request
     {
-        return Request::createFromGlobals();
+        return $this->requestStack->getCurrentRequest();
     }
 
     protected function populate(): void
@@ -22,5 +29,25 @@ abstract class BaseRequest
                 $this->{$property} = $value;
             }
         }
+    }
+
+    public function isValid(): bool
+    {
+        $this->populate();
+
+        $violations = $this->validator->validate($this);
+
+        if (count($violations) < 1) {
+            return true;
+        }
+
+        $this->errorMessages['errors'] = ValidationErrorsFormatter::formatValidationErrors($violations);
+
+        return false;
+    }
+
+    public function getErrorMessages(): array
+    {
+        return $this->errorMessages;
     }
 }

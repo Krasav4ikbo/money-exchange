@@ -1,7 +1,9 @@
 <?php
 namespace App\Tests\Provider;
 
+use App\DTO\CurrenciesUpdateDTO;
 use App\Exception\CurrencyProviderException;
+use App\Provider\BaseCurrencyProvider;
 use App\Provider\CBRCurrencyProvider;
 use App\Provider\CurrencyProviderFactory;
 use App\Provider\ECBCurrencyProvider;
@@ -44,5 +46,16 @@ class CurrencyProviderFactoryTest extends KernelTestCase
 
         // Assert
         $this->assertEquals(ECBCurrencyProvider::class, $provider::class);
+    }
+
+    public function testCorrectBaseSource(): void
+    {
+        // Act
+        $provider = $this->factory->getCurrencyProvider('');
+        $dataResult = $provider->getPreparedDataForUpdate();
+
+        // Assert
+        $this->assertEquals(BaseCurrencyProvider::class, $provider::class);
+        $this->assertEquals(CurrenciesUpdateDTO::class, $dataResult::class);
     }
 }

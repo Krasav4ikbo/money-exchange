@@ -1,8 +1,8 @@
 <?php
 namespace App\Provider;
 
-
 use App\DTO\CurrenciesUpdateDTO;
+use App\Factory\DTO\CurrencyUpdateDTOFactory;
 use App\Trait\RateRoundTrait;
 use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface;
@@ -20,7 +20,10 @@ class BaseCurrencyProvider implements CurrencyProviderInterface
 
     protected ?string $data;
 
-    public function __construct(protected HttpClientInterface $client)
+    public function __construct(
+        protected HttpClientInterface $client,
+        protected CurrencyUpdateDTOFactory $factory
+    )
     {}
 
     public function isSupport(string $sourceName): bool

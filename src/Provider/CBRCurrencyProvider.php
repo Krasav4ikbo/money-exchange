@@ -2,7 +2,6 @@
 namespace App\Provider;
 
 use App\DTO\CurrenciesUpdateDTO;
-use App\DTO\CurrencyUpdateDTO;
 use App\Serialize\Type\Xml\Valute;
 use App\Serialize\Type\Xml\Valutes;
 use App\Serialize\XmlSerializer;
@@ -30,19 +29,12 @@ class CBRCurrencyProvider extends BaseCurrencyProvider
         /** @var $data Valutes */
         /** @var $currency Valute */
         foreach ($data->getValutes() as $currency) {
-            $dto = new CurrencyUpdateDTO();
-
-            $dto->setIsoFrom($currency->getCharCode());
-
-            $dto->setIsoTo(self::MAIN_CURRENCY);
-
-            $dto->setProvider(self::SOURCE_NAME);
-
-            $dto->setNominal($currency->getNominal());
-
-            $dto->setRate($this->convertRate($currency->getUnitRate()));
-
-            $dto->setInvertedRate($this->roundRate(1 / $this->convertRate($currency->getUnitRate())));
+            $dto = $this->factory->createFromValute($currency, [
+                'isoTo' => self::MAIN_CURRENCY,
+                'provider' => self::SOURCE_NAME,
+                'rate' => $this->convertRate($currency->getUnitRate()),
+                'invertedRate' => $this->roundRate(1 / $this->convertRate($currency->getUnitRate())),
+            ]);
 
             $result->addCurrenciesUpdate($dto);
         }

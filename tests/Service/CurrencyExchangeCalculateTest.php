@@ -5,8 +5,8 @@ use App\DTO\ExchangeInputDTO;
 use App\Entity\CurrencyRate;
 use App\Repository\CurrencyRateRepository;
 use App\Service\CurrencyExchangeCalculate;
-use App\Validator\Validator;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\Validator\Validation;
 
 class CurrencyExchangeCalculateTest extends TestCase
 {
@@ -24,7 +24,7 @@ class CurrencyExchangeCalculateTest extends TestCase
 
         $this->currencyRateRepository = $this->createMock(CurrencyRateRepository::class);
 
-        $validator = $this->createMock(Validator::class);
+        $validator = Validation::createValidatorBuilder()->enableAttributeMapping()->getValidator();
 
         $this->currencyExchangeCalculate = new CurrencyExchangeCalculate($this->currencyRateRepository, $validator);
 
@@ -129,5 +129,59 @@ class CurrencyExchangeCalculateTest extends TestCase
         // Assert
         $this->assertTrue($result->isValid());
         $this->assertEquals(0.88, $result->getAmount());
+    }
+
+    public function testInvalidInputData(): void
+    {
+        // Arrange
+        $this->exchangeInput = (new ExchangeInputDTO())
+            ->setIsoFrom('USD')
+            ->setIsoTo('EUR');
+
+        // Act
+        $result = $this->currencyExchangeCalculate->calculate($this->exchangeInput);
+
+        // Assert
+        $this->assertFalse($result->isValid());
+        $this->assertEquals([
+            "errors" => [
+                [
+                    "property" => "amount",
+                    "value" => null,
+                    "message" => "This value should not be blank.",
+                ],
+                [
+                    "property" => "appSource",
+                    "value" => null,
+                    "message" => "This value should not be blank.",
+                ],
+            ]], $result->getErrorMessages());
+    }
+
+    public function testNotFoundResult(): void
+    {
+        // Arrange
+        $this->currencyRateRepository->expects($this->once())
+            ->method('findRate')
+            ->willReturn(null);
+
+        $currencyRate = (new CurrencyRate())
+            ->setId(1)
+            ->setIsoFrom('USD')
+            ->setIsoTo('RUB')
+            ->setRate(97.54)
+            ->setInvertedRate(0.01)
+            ->setNominal(1);
+
+        $this->currencyRateRepository->expects($this->once())
+            ->method('findCrossRates')
+            ->willReturn([$currencyRate]);
+
+        // Act
+        $result = $this->currencyExchangeCalculate->calculate($this->exchangeInput);
+
+        // Assert
+        $this->assertFalse($result->isValid());
+        $this->assertEquals(['Can not find rate for current pair',], $result->getErrorMessages());
     }
 }

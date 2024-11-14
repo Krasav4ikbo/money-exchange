@@ -13,11 +13,8 @@
 ###> phpunit/phpunit ###
 /phpunit.xml
 .phpunit.result.cache
+reports
 ###< phpunit/phpunit ###
-
-###> symfony/phpunit-bridge ###
-.phpunit.result.cache
-###< symfony/phpunit-bridge ###
 
 ###> symfony/asset-mapper ###
 /public/assets/

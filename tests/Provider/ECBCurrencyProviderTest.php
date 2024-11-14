@@ -2,6 +2,7 @@
 namespace App\Tests\Provider;
 
 use App\DTO\CurrencyUpdateDTO;
+use App\Factory\DTO\CurrencyUpdateDTOFactory;
 use App\Provider\ECBCurrencyProvider;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
@@ -9,6 +10,15 @@ use Symfony\Contracts\HttpClient\ResponseInterface;
 
 class ECBCurrencyProviderTest extends KernelTestCase
 {
+    private CurrencyUpdateDTOFactory $factory;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->factory = new CurrencyUpdateDTOFactory();
+    }
+
     public function testCorrectSourceData(): void
     {
         // Arrange
@@ -38,7 +48,7 @@ class ECBCurrencyProviderTest extends KernelTestCase
             ->method('request')
             ->willReturn($response);
 
-        $ecbCurrencyProvider = new ECBCurrencyProvider($client);
+        $ecbCurrencyProvider = new ECBCurrencyProvider($client, $this->factory);
 
         // Act
         $result = $ecbCurrencyProvider->getPreparedDataForUpdate();
@@ -83,7 +93,7 @@ class ECBCurrencyProviderTest extends KernelTestCase
             ->method('request')
             ->willReturn($response);
 
-        $ecbCurrencyProvider = new ECBCurrencyProvider($client);
+        $ecbCurrencyProvider = new ECBCurrencyProvider($client, $this->factory);
 
         // Act
         $result = $ecbCurrencyProvider->getPreparedDataForUpdate();

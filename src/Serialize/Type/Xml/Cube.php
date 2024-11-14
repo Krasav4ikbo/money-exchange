@@ -16,9 +16,11 @@ class Cube
         return $this->currency;
     }
 
-    public function setCurrency(string $currency): void
+    public function setCurrency(string $currency): static
     {
         $this->currency = $currency;
+
+        return $this;
     }
 
     public function getRate(): float
@@ -26,8 +28,10 @@ class Cube
         return $this->rate;
     }
 
-    public function setRate(float $rate): void
+    public function setRate(float $rate): static
     {
         $this->rate = $rate;
+
+        return $this;
     }
 }
