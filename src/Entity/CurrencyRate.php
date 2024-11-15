@@ -119,6 +119,6 @@ class CurrencyRate extends BaseEntity
 
     public function getSlug()
     {
-        return $this->iso_from . '-' . $this->iso_to . '-' . $this->provider;
+        return $this->isoFrom . '-' . $this->isoTo . '-' . $this->provider;
     }
 }
