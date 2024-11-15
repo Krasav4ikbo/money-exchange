@@ -23,7 +23,7 @@ class CurrencyRateRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('cr')
             ->where('cr.provider=:provider')
-            ->andWhere('(cr.iso_from = :iso_from and cr.iso_to = :iso_to) or (cr.iso_from = :iso_to and cr.iso_to = :iso_from)')
+            ->andWhere('(cr.isoFrom = :iso_from and cr.isoTo = :iso_to) or (cr.isoFrom = :iso_to and cr.isoTo = :iso_from)')
             ->setParameter('iso_from', $exchange->getIsoFrom())
             ->setParameter('iso_to', $exchange->getIsoTo())
             ->setParameter('provider', $exchange->getAppSource())
@@ -31,46 +31,55 @@ class CurrencyRateRepository extends ServiceEntityRepository
             ->getOneOrNullResult();
     }
 
-    public function findCrossRates(ExchangeInputDTO $exchange)
+    public function findCrossRatesIds(ExchangeInputDTO $exchange)
     {
         $qb = $this->createQueryBuilder('cr');
 
         $currenciesList = [$exchange->getIsoFrom(), $exchange->getIsoTo()];
 
         return $qb
-            ->select('cr', 'crj')
+            ->select('cr.id', 'crj.id')
             ->innerJoin(CurrencyRate::class, 'crj')
             ->where('cr.provider=:provider')
             ->andWhere('crj.provider=:provider')
             ->andWhere($qb->expr()->orX(
                 $qb->expr()->andX(
-                    $qb->expr()->in('cr.iso_from', 'crj.iso_to'),
-                    $qb->expr()->in('crj.iso_from', 'cr.iso_to'),
+                    $qb->expr()->in('cr.isoFrom', 'crj.isoTo'),
+                    $qb->expr()->in('crj.isoFrom', 'cr.isoTo'),
                 ),
                 $qb->expr()->andX(
-                    $qb->expr()->in('cr.iso_from', 'crj.iso_from'),
-                    $qb->expr()->in('cr.iso_to', 'crj.iso_to'),
+                    $qb->expr()->in('cr.isoFrom', 'crj.isoFrom'),
+                    $qb->expr()->in('cr.isoTo', 'crj.isoTo'),
                 ),
             ))
             ->andWhere($qb->expr()->orX(
                 $qb->expr()->andX(
-                    $qb->expr()->in('cr.iso_from', $currenciesList),
-                    $qb->expr()->in('crj.iso_to', $currenciesList),
+                    $qb->expr()->in('cr.isoFrom', $currenciesList),
+                    $qb->expr()->in('crj.isoTo', $currenciesList),
                 ),
                 $qb->expr()->andX(
-                    $qb->expr()->in('cr.iso_from', $currenciesList),
-                    $qb->expr()->in('crj.iso_from', $currenciesList),
+                    $qb->expr()->in('cr.isoFrom', $currenciesList),
+                    $qb->expr()->in('crj.isoFrom', $currenciesList),
                 ),
                 $qb->expr()->andX(
-                    $qb->expr()->in('cr.iso_to', $currenciesList),
-                    $qb->expr()->in('crj.iso_to', $currenciesList),
+                    $qb->expr()->in('cr.isoTo', $currenciesList),
+                    $qb->expr()->in('crj.isoTo', $currenciesList),
                 ),
                 $qb->expr()->andX(
-                    $qb->expr()->in('cr.iso_to', $currenciesList),
-                    $qb->expr()->in('crj.iso_from', $currenciesList),
+                    $qb->expr()->in('cr.isoTo', $currenciesList),
+                    $qb->expr()->in('crj.isoFrom', $currenciesList),
                 )
             ))
             ->setParameter('provider', $exchange->getAppSource())
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function getRatesPair(array $ids)
+    {
+        return $this->createQueryBuilder('cr')
+            ->where('cr.id IN (:ids)')
+            ->setParameter('ids', $ids)
             ->getQuery()
             ->getResult();
     }

@@ -83,9 +83,9 @@ class CurrencyExchangeCalculate
 
     private function findCrossRate(): void
     {
-        $currencyRates = $this->currencyRateRepository->findCrossRates($this->input);
+        $currencyRatesIds = $this->currencyRateRepository->findCrossRatesIds($this->input);
 
-        if (empty($currencyRates)) {
+        if (empty($currencyRatesIds) || count($currencyRatesIds) != 2) {
             $this->result->setIsValid(false);
 
             $this->result->setErrorMessages(['Can not find rate for current pair']);
@@ -97,37 +97,26 @@ class CurrencyExchangeCalculate
 
         $crossRate = 1;
 
-        $checkedRates = [];
+        $currencyRatesIds = array_map(function ($currencyRate) {
+            return $currencyRate['id'];
+        }, $currencyRatesIds);
+
+        $currencyRates = $this->currencyRateRepository->getRatesPair($currencyRatesIds);
 
         /** @var $currencyRate CurrencyRate */
         foreach ($currencyRates as $currencyRate) {
-            if (in_array($currencyRate->getId(), $checkedRates)) {
-                continue;
-            }
-
             if ($this->input->getIsoFrom() === $currencyRate->getIsoFrom()
                 || $this->input->getIsoTo() === $currencyRate->getIsoTo()
             ) {
                 $crossRate *= $currencyRate->getRate();
-            }
-
-            if ($this->input->getIsoFrom() === $currencyRate->getIsoTo()
-                || $this->input->getIsoTo() === $currencyRate->getIsoFrom()) {
+            } else {
                 $crossRate *= $currencyRate->getInvertedRate();
             }
-
-            $checkedRates[] = $currencyRate->getId();
         }
 
-        if (count($checkedRates) == 2) {
-            $this->result->setIsValid(true);
+        $this->result->setIsValid(true);
 
-            $this->result->setAmount($this->roundRateToFront($this->input->getAmount() * $crossRate));
-        } else {
-            $this->result->setIsValid(false);
-
-            $this->result->setErrorMessages(['Can not find rate for current pair']);
-        }
+        $this->result->setAmount($this->roundRateToFront($this->input->getAmount() * $crossRate));
 
         $this->result->setIsFinished(true);
     }

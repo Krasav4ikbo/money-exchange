@@ -83,7 +83,7 @@ class CurrencyExchangeCalculateTest extends TestCase
             ->willReturn(null);
 
         $this->currencyRateRepository->expects($this->once())
-            ->method('findCrossRates')
+            ->method('findCrossRatesIds')
             ->willReturn(null);
 
         // Act
@@ -120,8 +120,12 @@ class CurrencyExchangeCalculateTest extends TestCase
             ->willReturn(null);
 
         $this->currencyRateRepository->expects($this->once())
-            ->method('findCrossRates')
-            ->willReturn([$currencyRate, $currencyCrossRate, $currencyCrossRate, $currencyRate]);
+            ->method('findCrossRatesIds')
+            ->willReturn([['id' => 1], ['id' => 2]]);
+
+        $this->currencyRateRepository->expects($this->once())
+            ->method('getRatesPair')
+            ->willReturn([$currencyRate, $currencyCrossRate]);
 
         // Act
         $result = $this->currencyExchangeCalculate->calculate($this->exchangeInput);
@@ -165,17 +169,9 @@ class CurrencyExchangeCalculateTest extends TestCase
             ->method('findRate')
             ->willReturn(null);
 
-        $currencyRate = (new CurrencyRate())
-            ->setId(1)
-            ->setIsoFrom('USD')
-            ->setIsoTo('RUB')
-            ->setRate(97.54)
-            ->setInvertedRate(0.01)
-            ->setNominal(1);
-
         $this->currencyRateRepository->expects($this->once())
-            ->method('findCrossRates')
-            ->willReturn([$currencyRate]);
+            ->method('findCrossRatesIds')
+            ->willReturn([['id' => 1]]);
 
         // Act
         $result = $this->currencyExchangeCalculate->calculate($this->exchangeInput);

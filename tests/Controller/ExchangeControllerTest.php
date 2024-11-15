@@ -4,7 +4,6 @@ namespace App\Tests\Controller;
 
 use App\Controller\Api\ExchangeController;
 use App\Controller\Api\Request\ExchangeRequest;
-use App\DTO\ExchangeInputDTO;
 use App\DTO\ExchangeOutputDTO;
 use App\Factory\DTO\ExchangeInputDTOFactory;
 use App\Service\CurrencyExchangeCalculate;
@@ -13,12 +12,15 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Validator\Validation;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class ExchangeControllerTest extends KernelTestCase
 {
     private ExchangeController $controller;
 
     private ExchangeInputDTOFactory $factory;
+
+    private ValidatorInterface $validator;
 
     protected function setUp(): void
     {
