@@ -5,46 +5,46 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\HasLifecycleCallbacks()]
-class BaseEntity implements BaseEntityInterface
+class BaseEntity
 {
-    #[ORM\Column(type: 'datetime_immutable', nullable: false)]
-    protected ?\DateTimeImmutable $created_at = null;
+    #[ORM\Column(name: 'created_at', type: 'datetime_immutable', nullable: false)]
+    protected ?\DateTimeImmutable $createdAt = null;
 
-    #[ORM\Column(type: 'datetime', nullable: true)]
-    protected ?\DateTime $updated_at = null;
+    #[ORM\Column(name: 'updated_at', type: 'datetime', nullable: true)]
+    protected ?\DateTime $updatedAt = null;
 
     #[ORM\PrePersist]
     public function setCreatedAtValue(): void
     {
-        $this->created_at = new \DateTimeImmutable();
+        $this->createdAt = new \DateTimeImmutable();
     }
 
     #[ORM\PreUpdate]
     public function setUpdatedAtValue(): void
     {
-        $this->updated_at = new \DateTime();
+        $this->updatedAt = new \DateTime();
     }
 
     public function getCreatedAt(): ?\DateTimeImmutable
     {
-        return $this->created_at;
+        return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTimeImmutable $created_at): static
+    public function setCreatedAt(\DateTimeImmutable $createdAt): static
     {
-        $this->created_at = $created_at;
+        $this->createdAt = $createdAt;
 
         return $this;
     }
 
     public function getUpdatedAt(): ?\DateTime
     {
-        return $this->updated_at;
+        return $this->updatedAt;
     }
 
-    public function setUpdatedAt(?\DateTime $updated_at): static
+    public function setUpdatedAt(?\DateTime $updatedAt): static
     {
-        $this->updated_at = $updated_at;
+        $this->updatedAt = $updatedAt;
 
         return $this;
     }

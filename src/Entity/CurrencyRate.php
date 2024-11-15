@@ -15,11 +15,11 @@ class CurrencyRate extends BaseEntity
     #[ORM\Column(type: 'integer')]
     private int $id;
 
-    #[ORM\Column(length: 3)]
-    private string $iso_from;
+    #[ORM\Column(name: 'iso_from', length: 3)]
+    private string $isoFrom;
 
-    #[ORM\Column(length: 3)]
-    private string $iso_to;
+    #[ORM\Column(name: 'iso_to',length: 3)]
+    private string $isoTo;
 
     #[ORM\Column]
     private string $provider;
@@ -27,8 +27,8 @@ class CurrencyRate extends BaseEntity
     #[ORM\Column]
     private float $rate;
 
-    #[ORM\Column]
-    private float $inverted_rate;
+    #[ORM\Column(name: 'inverted_rate')]
+    private float $invertedRate;
 
     #[ORM\Column]
     private int $nominal;
@@ -47,24 +47,24 @@ class CurrencyRate extends BaseEntity
 
     public function getIsoFrom(): string
     {
-        return $this->iso_from;
+        return $this->isoFrom;
     }
 
-    public function setIsoFrom(string $iso_from): static
+    public function setIsoFrom(string $isoFrom): static
     {
-        $this->iso_from = $iso_from;
+        $this->isoFrom = $isoFrom;
 
         return $this;
     }
 
     public function getIsoTo(): string
     {
-        return $this->iso_to;
+        return $this->isoTo;
     }
 
-    public function setIsoTo(string $iso_to): static
+    public function setIsoTo(string $isoTo): static
     {
-        $this->iso_to = $iso_to;
+        $this->isoTo = $isoTo;
 
         return $this;
     }
@@ -95,12 +95,12 @@ class CurrencyRate extends BaseEntity
 
     public function getInvertedRate(): float
     {
-        return $this->inverted_rate;
+        return $this->invertedRate;
     }
 
-    public function setInvertedRate(float $inverted_rate): static
+    public function setInvertedRate(float $invertedRate): static
     {
-        $this->inverted_rate = $inverted_rate;
+        $this->invertedRate = $invertedRate;
 
         return $this;
     }

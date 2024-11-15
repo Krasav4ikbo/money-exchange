@@ -13,7 +13,7 @@ class CurrencyUpdateDTO
 
     private float $rate;
 
-    private float $inverted_rate;
+    private float $invertedRate;
 
     public function getIsoFrom(): string
     {
@@ -77,12 +77,12 @@ class CurrencyUpdateDTO
 
     public function getInvertedRate(): float
     {
-        return $this->inverted_rate;
+        return $this->invertedRate;
     }
 
-    public function setInvertedRate(float $inverted_rate): static
+    public function setInvertedRate(float $invertedRate): static
     {
-        $this->inverted_rate = $inverted_rate;
+        $this->invertedRate = $invertedRate;
 
         return $this;
     }

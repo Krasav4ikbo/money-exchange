@@ -5,7 +5,6 @@ namespace App\Service;
 use App\DTO\ExchangeInputDTO;
 use App\DTO\ExchangeOutputDTO;
 use App\Entity\CurrencyRate;
-use App\Exception\ValidationDTOException;
 use App\Formatter\ValidationErrorsFormatter;
 use App\Repository\CurrencyRateRepository;
 use App\Trait\RateRoundTrait;
