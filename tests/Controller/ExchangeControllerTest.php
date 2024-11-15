@@ -42,8 +42,8 @@ class ExchangeControllerTest extends KernelTestCase
         $requestData->expects($this->exactly(2))
             ->method('toArray')
             ->willReturn([
-                'iso_from' => 'USD',
-                'iso_to' => 'GBP',
+                'isoFrom' => 'USD',
+                'isoTo' => 'GBP',
                 'amount' => 100,
             ]);
 
@@ -79,8 +79,8 @@ class ExchangeControllerTest extends KernelTestCase
         $requestData->expects($this->exactly(2))
             ->method('toArray')
             ->willReturn([
-                'iso_from' => 'USD',
-                'iso_to' => 'GBP',
+                'isoFrom' => 'USD',
+                'isoTo' => 'GBP',
                 'amount' => 100,
             ]);
 
@@ -114,10 +114,10 @@ class ExchangeControllerTest extends KernelTestCase
         $requestData->expects($this->exactly(2))
             ->method('toArray')
             ->willReturn([
-                'iso_from' => 'USD',
-                'iso_to' => 'GBP',
+                'isoFrom' => 'USD',
+                'isoTo' => 'GBP',
                 'amount' => 100,
-                'app_source' => 'ECB',
+                'appSource' => 'ECB',
             ]);
 
         $requestStack = $this->createMock(RequestStack::class);
@@ -154,8 +154,8 @@ class ExchangeControllerTest extends KernelTestCase
         $requestData->expects($this->exactly(1))
             ->method('toArray')
             ->willReturn([
-                'iso_from' => 'USD',
-                'iso_to' => 'GBP',
+                'isoFrom' => 'USD',
+                'isoTo' => 'GBP',
             ]);
 
         $requestStack->expects($this->exactly(1))
