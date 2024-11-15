@@ -17,11 +17,11 @@ class ApiBaseController extends AbstractController
         return $this->json($body, Response::HTTP_BAD_REQUEST);
     }
 
-    protected function sendSuccessResponse(mixed $message): Response
+    protected function sendSuccessResponse(mixed $amount): Response
     {
         $body = [
             'status' => 'success',
-            'amount' => $message
+            'amount' => $amount
         ];
 
         return $this->json($body, Response::HTTP_OK);

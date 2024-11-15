@@ -8,9 +8,9 @@ class ExchangeInputDTOFactory
     public function createFromArray(array $data): ExchangeInputDTO
     {
         return (new ExchangeInputDTO())
-            ->setIsoFrom($data['iso_from'])
-            ->setIsoTo($data['iso_to'])
+            ->setIsoFrom($data['isoFrom'])
+            ->setIsoTo($data['isoTo'])
             ->setAmount($data['amount'])
-            ->setAppSource($data['app_source']);
+            ->setAppSource($data['appSource']);
     }
 }

@@ -24,10 +24,10 @@ class ExchangeController extends ApiBaseController
 
         $requestData = $request->getRequest()->toArray();
 
-        $appSource = $this->getParameter('app_source');
+        $appSource = $this->getParameter('appSource');
 
-        if (empty($requestData['app_source'])) {
-            $requestData['app_source'] = $appSource;
+        if (empty($requestData['appSource'])) {
+            $requestData['appSource'] = $appSource;
         }
 
         $exchangeInput = $factory->createFromArray($requestData);

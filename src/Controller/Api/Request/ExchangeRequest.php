@@ -8,16 +8,16 @@ class ExchangeRequest extends BaseRequest
 {
     #[Type('string')]
     #[NotBlank([])]
-    protected $iso_from;
+    protected $isoFrom;
 
     #[Type('string')]
     #[NotBlank([])]
-    protected $iso_to;
+    protected $isoTo;
 
     #[Type('integer')]
     #[NotBlank([])]
     protected $amount;
 
     #[Type('string')]
-    protected $app_source;
+    protected $appSource;
 }

@@ -21,10 +21,10 @@ class ExchangeInputDTOFactoryTest extends TestCase
     {
         // Arrange
         $data = [
-            'iso_from' => 'USD',
-            'iso_to' => 'EUR',
+            'isoFrom' => 'USD',
+            'isoTo' => 'EUR',
             'amount' => 100,
-            'app_source' => 'ECB',
+            'appSource' => 'ECB',
         ];
 
         // Act

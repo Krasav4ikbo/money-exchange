@@ -21,11 +21,16 @@ class CurrencyRateRepository extends ServiceEntityRepository
 
     public function findRate(ExchangeInputDTO $exchange)
     {
+        $qb = $this->createQueryBuilder('cr');
+
         return $this->createQueryBuilder('cr')
             ->where('cr.provider=:provider')
-            ->andWhere('(cr.isoFrom = :iso_from and cr.isoTo = :iso_to) or (cr.isoFrom = :iso_to and cr.isoTo = :iso_from)')
-            ->setParameter('iso_from', $exchange->getIsoFrom())
-            ->setParameter('iso_to', $exchange->getIsoTo())
+            ->andWhere($qb->expr()->orX(
+                $qb->expr()->andX('cr.isoFrom = :isoFrom', 'cr.isoTo = :isoTo'),
+                $qb->expr()->andX('cr.isoFrom = :isoTo', 'cr.isoTo = :isoFrom'),
+            ))
+            ->setParameter('isoFrom', $exchange->getIsoFrom())
+            ->setParameter('isoTo', $exchange->getIsoTo())
             ->setParameter('provider', $exchange->getAppSource())
             ->getQuery()
             ->getOneOrNullResult();
